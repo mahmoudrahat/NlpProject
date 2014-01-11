@@ -31,7 +31,7 @@ if __name__ == '__main__':
 	    print neighbor.text
 	    
 	fin = open('input/Sample.txt', 'r' )
-	fout = open('output/out.txt', 'w's )
+	fout = open('output/out.txt', 'w')
 	content = fin.read()
 	words = extract_words(content)
 	for t, f in words.items():	
