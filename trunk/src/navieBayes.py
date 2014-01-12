@@ -1,5 +1,5 @@
 import sys
-import xml.etree.ElementTree as ET
+from tools.HamshahriParser import *;
 
 def gen_ngrams(items, n):
     """Return dict of generated ngrams with number of occurences.
@@ -25,10 +25,11 @@ if __name__ == '__main__':
 	reload(sys)
 	sys.setdefaultencoding("utf-8")
 
-	tree = ET.parse('input/HAM2-960622.xml')
-	root = tree.getroot()
-	for neighbor in root.iter('CAT'):
-	    print neighbor.text
+	hamshahri = load_hamshahri('E:/Mahmoud/Hamshahri/Corpus');
+	for idx, doc in enumerate(hamshahri):
+	    fout = open('output/out' + str(idx) + '.txt', 'w')
+	    fout.write(doc.category + '\n__________________\n' + doc.text)
+	    fout.close()
 	    
 	fin = open('input/Sample.txt', 'r' )
 	fout = open('output/out.txt', 'w')
