@@ -1,22 +1,14 @@
 import sys
 import math
 from tools.HamshahriParser import *;
-
-def gen_ngrams(items, n):
-    """Return dict of generated ngrams with number of occurences.
-    
-        >>> ngrams([1,2,5,1,2], 2)
-        {(1, 2): 2, (2, 5): 1, (5, 1): 1}
-    """
-    ngs = {}
-    ilen = len(items)
-    for i in xrange(ilen-n+1):
-        ng = tuple(items[i:i+n])
-        ngs[ng] = ngs.get(ng, 0) + 1
-    return ngs
+from preprocessing.farsi import *
+from preprocessing import general
 
 def extract_words(text):
-    words = text.split(' ');
+    text = text.replace('\n', ' ')
+    text = text.replace('\r', ' ')
+    x = normalize(general.safeunicode(text))
+    words = remove_puncts(x.replace(HALF_SPACE, ' ')).split(' ')
     words = map(lambda w: w.strip(), words)
     words = gen_ngrams(filter(lambda w: w != '', words), 1)
     words = {i[0][0]:i[1] for i in words.items()}
@@ -70,16 +62,29 @@ if __name__ == '__main__':
 	sys.setdefaultencoding("utf-8")
 
 	nb = NaiveBayes()
-	hamshahri = load_hamshahri('E:/Mahmoud/Hamshahri/Corpus');
+	hamshahri = load_hamshahri('D:/Hamshahri/Corpus');
+	print 'Training...'
+	#fout = open('output/out' + '.txt', 'w')
 	for idx, doc in enumerate(hamshahri):
-	    fout = open('output/out' + str(idx) + '.txt', 'w')
-	    fout.write(doc.category + '\n__________________\n' + doc.text)
-	    fout.close()
-	    nb.train(doc.category, extract_words(doc.text))
+	    #fout.write('\n__________________\n' + doc.category + '\n__________________\n' + doc.file_path + '\n__________________\n' + doc.text)
+	    print 'Training Document Num:' + str(idx) + " in " + doc.file_path
+
+	    #fout.write('\n__________________\n' + doc.category + '\n__________________\n' + doc.file_path + '\n__________________\n')
+	    WORDS = extract_words(doc.text)
+	    #for w,t in WORDS.items():
+	    #    fout.write(str(t) + ':' + w + '\n')
+	    
+
+	    nb.train(doc.category, WORDS)
+	#fout.close()
 	
-	fin = open('input/Sample.txt', 'r' )
-	content = fin.read()
-	nb.classify(extract_words(content))
+	keyboard_input = ""
+	while keyboard_input != "e":
+	    keyboard_input = raw_input("Press Enter to continue(e:Exit)...")	
+	    fin = open('input/Sample.txt', 'r' )
+	    content = fin.read()
+	    nb.classify(extract_words(content))
+	    fin.close()
 	
 	fin = open('input/Sample.txt', 'r' )
 	fout = open('output/out.txt', 'w')
