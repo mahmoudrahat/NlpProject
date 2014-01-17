@@ -21,6 +21,6 @@ def load_hamshahri(corpus_path):
                   for doc in root.findall('DOC'):
                       new_doc = Document(doc.find('./CAT').text, doc.find('./TEXT').text, file_path)
                       corpus.append(new_doc)
-              #break
+              break
       break
     return corpus
