@@ -6,8 +6,14 @@ from tools.HamshahriParser import *;
 from preprocessing.farsi import *
 from preprocessing import general
 from tools.corpusNormalizer import *
+import redis
 
 if __name__ == '__main__':
+    red = redis.Connection('10.25.25.242')
+    red.connect()
+    red.send_command("ping")
+    res = red.read_response()
+    
     reload(sys)
     sys.setdefaultencoding("utf-8")
     #sys.stdout = open('output/out.txt', 'w')
